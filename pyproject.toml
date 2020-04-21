@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "geotag-photos"
+name = "geotag"
 version = "0.1.0"
-description = ""
+description = "Use your Google location history data to add GPS EXIF metadata to your photos"
 authors = ["Francisco-Pierre Puig <puig.franciscopierre@gmail.com>"]
 
 [tool.poetry.dependencies]
