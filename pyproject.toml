@@ -13,3 +13,6 @@ black = {version = "^19.10b0", allow-prereleases = true}
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+geotag = "geotag.geotag:main"
