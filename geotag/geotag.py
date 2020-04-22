@@ -104,6 +104,10 @@ def get_exif_diff(
             )
             continue
 
+        # Unfortunately, the datetime present in the EXIF is stored in a human readable
+        # format that doesn't include timezone information. The following lines assume
+        # that the datetime stored inside the image is in the UTC timezone, which may
+        # not be the case depending on how your camera's time is was configured.
         img_timestamp = img_date.timestamp()
         i = bisect.bisect_left(location_timestamps, img_timestamp)
 
@@ -123,7 +127,7 @@ def get_exif_diff(
     return exif_diff
 
 
-def main(location_history_path: str, root_path: str):
+def add_google_location_to_images(location_history_path: str, root_path: str):
     location_history = read_google_location_history(location_history_path)
     timestamps = [loc.timestamp for loc in location_history]
     exif = read_exif(root_path)
@@ -136,7 +140,7 @@ def main(location_history_path: str, root_path: str):
         write_exif(root_path, exif_diff_path)
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "location_history", help="path to your google location history json dump",
@@ -145,4 +149,4 @@ if __name__ == "__main__":
         "root_path", help="path to the photos you want to add GPS info to"
     )
     args = parser.parse_args()
-    main(args.location_history, args.root_path)
+    add_gps_exif(args.location_history, args.root_path)
