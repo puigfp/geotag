@@ -150,3 +150,7 @@ def main():
     )
     args = parser.parse_args()
     add_gps_exif(args.location_history, args.root_path)
+
+
+if __name__ == "__main__":
+    main()
