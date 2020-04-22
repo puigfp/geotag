@@ -16,6 +16,12 @@ You'll need to download your Location History from [Google Takeout](https://take
 
 You'll need to have [`exiftool`](https://exiftool.org/) installed on your machine an in your `PATH`. On macOS, you can install it with `brew install exiftool`. The script uses `exiftool`'s JSON API to read/write EXIF to your files.
 
+## Warning: Timezones
+
+Unfortunately, the EXIF metadata don't specify the timezone where the picture was taken. Therefore, this script assumes that the datetime is in the UTC timezone.
+
+You may want to update the script to change this behavior.
+
 ## References
 
 - [ExifTool by Phil Harvey](https://exiftool.org/)
