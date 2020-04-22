@@ -141,7 +141,10 @@ def add_google_location_to_images(location_history_path: str, root_path: str):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog="geotag",
+        description="Add GPS metadata to your photos/videos using your Google location history data",
+    )
     parser.add_argument(
         "location_history", help="path to your google location history json dump",
     )
