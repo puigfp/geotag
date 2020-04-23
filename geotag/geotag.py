@@ -56,7 +56,8 @@ def read_exif(root: str) -> List[dict]:
 def write_exif(root_path: str, exif_diff_path: str):
     log.info("writing exif diff to photos using exiftool...")
     subprocess.run(
-        ["exiftool", f"-json={exif_diff_path}", root_path], check=True,
+        ["exiftool", "-overwrite_original", f"-json={exif_diff_path}", root_path],
+        check=True,
     )
 
 
