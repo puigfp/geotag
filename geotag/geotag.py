@@ -69,10 +69,14 @@ def location_to_exif_diff(location: Location, img_path: str) -> dict:
         ),
         "GPSTimeStamp": datetime.fromtimestamp(location.timestamp).strftime("%H:%M:%S"),
         "GPSDateStamp": datetime.fromtimestamp(location.timestamp).strftime("%Y:%m:%d"),
-        "GPSLatitudeRef": "N",
-        "GPSLongitudeRef": "E",
-        "GPSLatitude": location.latitude,
-        "GPSLongitude": location.longitude,
+        "EXIF:GPSLatitudeRef": "N",
+        "EXIF:GPSLongitudeRef": "E",
+        "EXIF:GPSLatitude": f"{location.latitude} N",
+        "EXIF:GPSLongitude": f"{location.longitude} E",
+        # XXX: it seems we need to write both EXIF and XMP data to make Lightroom read
+        # the data
+        "XMP:GPSLatitude": f"{location.latitude} N",
+        "XMP:GPSLongitude": f"{location.longitude} E",
     }
 
 
