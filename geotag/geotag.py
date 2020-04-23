@@ -152,7 +152,7 @@ def main():
         "root_path", help="path to the photos you want to add GPS info to"
     )
     args = parser.parse_args()
-    add_gps_exif(args.location_history, args.root_path)
+    add_google_location_to_images(args.location_history, args.root_path)
 
 
 if __name__ == "__main__":
