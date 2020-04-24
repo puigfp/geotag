@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 log = logging.getLogger("geotag")
@@ -62,13 +62,12 @@ def write_exif(root_path: str, exif_diff_path: str):
 
 
 def location_to_exif_diff(location: Location, img_path: str) -> dict:
+    location_datetime = datetime.fromtimestamp(location.timestamp, tz=timezone.utc)
     return {
         "SourceFile": img_path,
-        "GPSDateTime": (
-            datetime.fromtimestamp(location.timestamp).strftime("%Y:%m:%d %H:%M:%SZ")
-        ),
-        "GPSTimeStamp": datetime.fromtimestamp(location.timestamp).strftime("%H:%M:%S"),
-        "GPSDateStamp": datetime.fromtimestamp(location.timestamp).strftime("%Y:%m:%d"),
+        "GPSDateTime": location_datetime.strftime("%Y:%m:%d %H:%M:%SZ"),
+        "GPSTimeStamp": location_datetime.strftime("%H:%M:%S"),
+        "GPSDateStamp": location_datetime.strftime("%Y:%m:%d"),
         "EXIF:GPSLatitudeRef": "N",
         "EXIF:GPSLongitudeRef": "E",
         "EXIF:GPSLatitude": f"{location.latitude} N",
@@ -81,13 +80,13 @@ def location_to_exif_diff(location: Location, img_path: str) -> dict:
 
 
 def get_exif_diff(
-    list_exif: List[dict], location_history: List[Location]
+    list_exif: List[dict], location_history: List[Location], utc_offset: float
 ) -> List[dict]:
     log.info("computing exif diff")
     location_timestamps = [location.timestamp for location in location_history]
     date_interval = (
-        datetime.fromtimestamp(location_timestamps[0]),
-        datetime.fromtimestamp(location_timestamps[-1]),
+        datetime.fromtimestamp(location_timestamps[0], tz=timezone.utc),
+        datetime.fromtimestamp(location_timestamps[-1], tz=timezone.utc),
     )
 
     exif_diff = []
@@ -100,12 +99,13 @@ def get_exif_diff(
             log.warning(f'skipping "{img_path}", gps info already present')
             continue
 
-        img_date = datetime.strptime(img_exif["DateTimeOriginal"], "%Y:%m:%d %H:%M:%S")
+        img_date = datetime.strptime(
+            img_exif["DateTimeOriginal"], "%Y:%m:%d %H:%M:%S",
+        ).replace(tzinfo=timezone(timedelta(hours=utc_offset)))
         if not date_interval[0] <= img_date < date_interval[1]:
             log.warning(
                 f'skipping "{img_path}", {img_date} is out of location history range '
-                f"[{datetime.fromtimestamp(location_timestamps[0])}, "
-                f"{datetime.fromtimestamp(location_timestamps[-1])}]"
+                f"[{date_interval[0]}, {date_interval[1]}]"
             )
             continue
 
@@ -132,11 +132,13 @@ def get_exif_diff(
     return exif_diff
 
 
-def add_google_location_to_images(location_history_path: str, root_path: str):
+def add_google_location_to_images(
+    location_history_path: str, root_path: str, utc_offset: float
+):
     location_history = read_google_location_history(location_history_path)
     timestamps = [loc.timestamp for loc in location_history]
     exif = read_exif(root_path)
-    exif_diff = get_exif_diff(exif, location_history)
+    exif_diff = get_exif_diff(exif, location_history, utc_offset)
     with tempfile.TemporaryDirectory() as temp_directory:
         exif_diff_path = os.path.join(temp_directory, "exif_diff.json")
         log.debug(f"writing temporary exif diff json to {exif_diff_path}...")
@@ -156,8 +158,16 @@ def main():
     parser.add_argument(
         "root_path", help="path to the photos you want to add GPS info to"
     )
+    parser.add_argument(
+        "--utc-offset",
+        help="photos creation datetime offset (in hours) with UTC time (default: 0.0 hours)",
+        type=float,
+        default=0.0,
+    )
     args = parser.parse_args()
-    add_google_location_to_images(args.location_history, args.root_path)
+    add_google_location_to_images(
+        args.location_history, args.root_path, args.utc_offset
+    )
 
 
 if __name__ == "__main__":
