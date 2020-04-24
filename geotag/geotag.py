@@ -48,7 +48,7 @@ def read_google_location_history(path: str) -> List[Location]:
 def read_exif(root: str) -> List[dict]:
     log.info("reading exif from photos using exiftool...")
     completed = subprocess.run(
-        ["exiftool", "-json", root], capture_output=True, check=True
+        ["exiftool", "-json", "-r", root], capture_output=True, check=True
     )
     return json.loads(completed.stdout)
 
@@ -56,7 +56,7 @@ def read_exif(root: str) -> List[dict]:
 def write_exif(root_path: str, exif_diff_path: str):
     log.info("writing exif diff to photos using exiftool...")
     subprocess.run(
-        ["exiftool", "-overwrite_original", f"-json={exif_diff_path}", root_path],
+        ["exiftool", "-overwrite_original", f"-json={exif_diff_path}", "-r", root_path],
         check=True,
     )
 
