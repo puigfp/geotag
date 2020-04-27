@@ -64,15 +64,17 @@ def discard_bad_gps_points(location_history: List[Location]) -> List[Location]:
             speed_discard = 3.6 * speed_gps(
                 location_history_clean[-1], location_history[i + 1]
             )
-            # arbitrary threshold: 200km/h
-            if speed_keep > 200.0 and speed_keep > 5 * speed_discard:
+            if speed_keep > 30.0 and speed_keep > 3 * speed_discard:
                 continue
 
         location_history_clean.append(location_history[i])
 
     n_discarded = len(location_history) - len(location_history_clean)
     if n_discarded > 0:
-        log.warning(f"discarded {n_discarded}/{len(location_history)} GPS points")
+        log.warning(
+            f"discarded {n_discarded}/{len(location_history)} "
+            f"({100 * n_discarded/len(location_history):.2f}%) GPS points"
+        )
 
     return location_history_clean
 
