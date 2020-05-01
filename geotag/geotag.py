@@ -163,10 +163,6 @@ def get_exif_diff(
             )
             continue
 
-        # Unfortunately, the datetime present in the EXIF is stored in a human readable
-        # format that doesn't include timezone information. The following lines assume
-        # that the datetime stored inside the image is in the UTC timezone, which may
-        # not be the case depending on how your camera's time is was configured.
         img_timestamp = img_date.timestamp()
         i = bisect.bisect_left(location_timestamps, img_timestamp)
 
