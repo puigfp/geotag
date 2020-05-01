@@ -2,7 +2,7 @@
 
 ## Use case
 
-- you have camera that doesn't have a built-in GPS chip
+- your camera doesn't have a built-in GPS chip
 - you let Google harvest your location history
 - you want to add GPS EXIF metadata to the files produced by your camera
 
@@ -16,11 +16,19 @@ You'll need to download your Location History from [Google Takeout](https://take
 
 You'll need to have [`exiftool`](https://exiftool.org/) installed on your machine an in your `PATH`. On macOS, you can install it with `brew install exiftool`. The script uses `exiftool`'s JSON API to read/write EXIF to your files.
 
-## Warning: Timezones
+## Notes
 
-Unfortunately, the EXIF metadata don't specify the timezone where the picture was taken. Therefore, this script assumes that the datetime is in the UTC timezone.
+### Timezones
 
-You may want to update the script to change this behavior.
+Unfortunately, the EXIF metadata don't specify the timezone where the picture was taken. Therefore, you must provide the `--utc-offset` flag if your camera doesn't use UTC time.
+
+### ExifTool can already geotag pictures
+
+Using the [`-geotag` command](https://exiftool.org/geotag.html#geotag) and a KML export of the location history, exiftool can almost do the same thing as this script. However, using a script such as this one gives me more control:
+
+- applying some preprocessing to the location history (GPS data is noisy, and removing absurd GPS data points can make the results a lot better)
+- overwriting already existing GPS data or not
+- ...
 
 ## References
 
