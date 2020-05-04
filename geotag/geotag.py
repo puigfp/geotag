@@ -1,21 +1,15 @@
 import argparse
 import bisect
 import json
-import logging
 import os
 import math
 import subprocess
-import sys
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import List
 
-log = logging.getLogger("geotag")
-log_sh = logging.StreamHandler(sys.stderr)
-log_sh.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
-log.addHandler(log_sh)
-log.setLevel(logging.DEBUG)
+from .log import log
 
 
 @dataclass
@@ -219,7 +213,3 @@ def main():
     add_google_location_to_images(
         args.location_history, args.root_path, args.utc_offset
     )
-
-
-if __name__ == "__main__":
-    main()

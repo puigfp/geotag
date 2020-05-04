@@ -8,13 +8,17 @@
 
 ## Usage
 
-**make a separate copy of your photos/videos before using this script**
+**make a backup of your photos/videos before using this code**
 
-This script is a single Python 3 file that doesn't have any Python dependencies (beside modules from the Python standard library) that you'll probably need to modify a little bit to make it fit your use case. Download [this file](./geotag/geotag.py), and run it using `python geotag.py -h`.
+You'll probably need to update the code to get it to do exactly what you want. Clone the repository locally and run it using `python path/to/repository/geotag.py`.
 
-You'll need to download your Location History from [Google Takeout](https://takeout.google.com/settings/takeout) in JSON format.
+Before running the code:
 
-You'll need to have [`exiftool`](https://exiftool.org/) installed on your machine an in your `PATH`. On macOS, you can install it with `brew install exiftool`. The script uses `exiftool`'s JSON API to read/write EXIF to your files.
+- You need to download your Location History from [Google Takeout](https://takeout.google.com/settings/takeout) in JSON format.
+
+- You need to have [`exiftool`](https://exiftool.org/) installed on your machine an in your `PATH` (the script uses `exiftool`'s JSON API to read/write EXIF to your files).
+
+  On macOS, you can install it with `brew install exiftool`.
 
 ## Notes
 
