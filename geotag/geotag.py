@@ -55,9 +55,16 @@ def discard_bad_gps_points(location_history: List[Location]) -> List[Location]:
             speed_keep = 3.6 * speed_gps(
                 location_history_clean[-1], location_history[i]
             )
-            speed_discard = 3.6 * speed_gps(
-                location_history_clean[-1], location_history[i + 1]
-            )
+
+            if speed_keep < 90.0:
+                speed_discard = 3.6 * speed_gps(
+                    location_history_clean[-1], location_history[i + 1]
+                )
+            else:
+                speed_discard = min(
+                    3.6 * speed_gps(location_history_clean[-1], location_history[j])
+                    for j in range(i + 1, min(i + 1 + 5, len(location_history)))
+                )
             if speed_keep > 30.0 and speed_keep > 3 * speed_discard:
                 continue
 
