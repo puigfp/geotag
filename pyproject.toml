@@ -6,6 +6,8 @@ authors = ["Francisco-Pierre Puig <puig.franciscopierre@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+timezonefinder = {extras = ["numba"], version = "^4.3.1"}
+pytz = "^2020.1"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^19.10b0", allow-prereleases = true}
@@ -13,6 +15,7 @@ nb_black = "^1.0.7"
 jupyter = "^1.0.0"
 matplotlib = "^3.2.1"
 seaborn = "^0.10.0"
+pytest = "^5.4.1"
 
 [tool.poetry.scripts]
 geotag = "geotag:main"
