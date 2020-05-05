@@ -4,7 +4,7 @@ import os
 import tempfile
 
 from .exif import get_exif_diff, read_exif, write_exif, parse_exif_timezone_offset
-from .gps import discard_bad_gps_points, read_google_location_history
+from .location_history import discard_bad_gps_points, read_google_location_history
 from .log import log
 
 

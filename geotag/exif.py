@@ -9,7 +9,7 @@ from typing import List, Optional
 import pytz
 from timezonefinder import TimezoneFinder
 
-from .gps import Location
+from .location_history import Location
 from .log import log
 
 tf = TimezoneFinder(in_memory=True)
