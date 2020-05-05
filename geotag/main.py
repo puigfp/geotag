@@ -3,13 +3,13 @@ import json
 import os
 import tempfile
 
-from .exif import get_exif_diff, read_exif, write_exif
+from .exif import get_exif_diff, read_exif, write_exif, parse_exif_timezone_offset
 from .gps import discard_bad_gps_points, read_google_location_history
 from .log import log
 
 
 def add_google_location_to_images(
-    location_history_path: str, root_path: str, utc_offset: float
+    location_history_path: str, root_path: str, utc_offset: str
 ):
     location_history = read_google_location_history(location_history_path)
     location_history = discard_bad_gps_points(location_history)
@@ -36,12 +36,15 @@ def main():
         "root_path", help="path to the photos you want to add GPS info to"
     )
     parser.add_argument(
-        "--utc-offset",
-        help="photos creation datetime offset (in hours) with UTC time (default: 0.0 hours)",
-        type=float,
-        default=0.0,
+        "--utc-offset-default",
+        help="default UTC time offset of the image creation datetimes, "
+        f'only used when the "OffsetTimeOriginal" field is missing from the EXIF '
+        '(default value: "+00:00")',
+        default="+00:00",
     )
     args = parser.parse_args()
+
+    utc_offset_default = parse_exif_timezone_offset(args.utc_offset_default)
     add_google_location_to_images(
-        args.location_history, args.root_path, args.utc_offset
+        args.location_history, args.root_path, utc_offset_default
     )
