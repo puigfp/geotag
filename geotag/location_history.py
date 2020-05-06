@@ -1,3 +1,5 @@
+from __future__ import annotations  # see https://stackoverflow.com/a/33533514
+
 import json
 import math
 from dataclasses import dataclass
@@ -12,6 +14,15 @@ class Location:
     latitude: float
     longitude: float
     accuracy: int
+
+    @staticmethod
+    def from_google_json(d: dict) -> Location:
+        return Location(
+            timestamp=int(d["timestampMs"]) // 1000,
+            latitude=int(d["latitudeE7"]) / 10 ** 7,
+            longitude=int(d["longitudeE7"]) / 10 ** 7,
+            accuracy=int(d["accuracy"]),
+        )
 
 
 def dist_gps(lat1: float, long1: float, lat2: float, long2: float) -> float:
@@ -81,13 +92,7 @@ def read_google_location_history(path: str) -> List[Location]:
 
     log.info("processing location history json...")
     location_history = [
-        Location(
-            timestamp=int(elem["timestampMs"]) // 1000,
-            latitude=float(elem["latitudeE7"]) / 10 ** 7,
-            longitude=float(elem["longitudeE7"]) / 10 ** 7,
-            accuracy=int(elem["accuracy"]),
-        )
-        for elem in location_history_json["locations"]
+        Location.from_google_json(d) for d in location_history_json["locations"]
     ]
     location_history.sort(key=lambda location: location.timestamp)
 
