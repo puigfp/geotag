@@ -19,6 +19,9 @@ jobs:
       run: |
         poetry config virtualenvs.in-project true
 
+    - name: Install exiftool
+      run: sudo apt install libimage-exiftool-perl
+
     - name: Checkout repository
       uses: actions/checkout@v1
 
