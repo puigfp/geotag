@@ -7,12 +7,10 @@ from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 import pytz
-from timezonefinder import TimezoneFinder
 
 from .location_history import Location
 from .log import log
-
-tf = TimezoneFinder(in_memory=True)
+from .timezone import gps_coords_to_utc_offset
 
 
 def read_exif(root: str) -> List[dict]:
@@ -29,30 +27,6 @@ def write_exif(root_path: str, exif_diff_path: str):
         ["exiftool", "-overwrite_original", f"-json={exif_diff_path}", "-r", root_path],
         check=True,
     )
-
-
-def gps_coords_to_utc_offset(dt: datetime, lat: float, lng: float) -> int:
-    """
-    Returns the UTC offset (as a signed number of minutes) of a given location at a
-    given datetime.
-    Note: if the datetime has no timezone information, this function considers the
-    timezone to be the timezone associated with the provided GPS coordinates (please
-    see the test for more details).
-    """
-    # tz_str: timezone string (eg, "Europe/Paris")
-    tz_str = tf.timezone_at(lat=lat, lng=lng)
-    assert tz_str is not None
-
-    # tz: pytz tzinfo object
-    tz = pytz.timezone(tz_str)
-
-    # convert dt to naive datetime if necesary
-    if dt.tzinfo is not None:
-        dt = dt.astimezone(tz).replace(tzinfo=None)
-
-    # because of daylight savings, the UTC offset depends on the date
-    offset = tz.utcoffset(dt)
-    return int(offset.total_seconds()) // 60
 
 
 # regex for parsing the EXIF time offset format ("±HH:MM")
