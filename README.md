@@ -10,8 +10,6 @@
 
 **make a backup of your photos/videos before using this code**
 
-You'll probably need to update the code to get it to do exactly what you want. Clone the repository locally and run it using `python path/to/repository/geotag.py`.
-
 Before running the code:
 
 - You need to download your Location History from [Google Takeout](https://takeout.google.com/settings/takeout) in JSON format.
@@ -19,6 +17,15 @@ Before running the code:
 - You need to have [`exiftool`](https://exiftool.org/) installed on your machine an in your `PATH` (the script uses `exiftool`'s JSON API to read/write EXIF to your files).
 
   On macOS, you can install it with `brew install exiftool`.
+
+You'll probably need to update the code to get it to do exactly what you want, a way of doing that is:
+
+- Install [poetry](https://python-poetry.org/).
+- Clone this repository.
+- Run `poetry install`, which creates a separate python environment and installs this project's dependencies inside it.
+- Run `poetry shell`, which activates this python environment is you current shell.
+- Running `geotag -h` should now work.
+- You can now modify the code and run it with `geotag path/to/location_history.json path/to/photos/folder/`
 
 ## Notes
 
