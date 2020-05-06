@@ -24,7 +24,12 @@ Before running the code:
 
 ### Timezones
 
-Unfortunately, the EXIF metadata don't specify the timezone where the picture was taken. Therefore, you must provide the `--utc-offset` flag if your camera doesn't use UTC time.
+Unfortunately, the EXIF standard only recently added a way to store the timezone in which a picture was taken (`OffsetTimeOriginal` field, EXIF Standard 2.31, July 2016). As a result, most cameras don't populate the field, which isn't ideal, considering we need to convert the `DateTimeOriginal` string to a UTC timestamp to find the closest location of the history.
+
+If your camera doesn't populate the field, you should provide the `--utc-offset-default` flag (format: `±HH:MM`), and its value should be equal to the the offset of your camera's time with UTC time.
+
+Once the script has added GPS metadata to the pictures, it can use that GPS location to figure out the timezone in which each picture was taken, and update the `DateTimeOriginal` and `OffsetTimeOriginal` fields with more meaningful values.  
+For instance, my camera doesn't populate the timezone field, and I have configured it so that it uses UTC time. If a photo was taken in the UTC-4 timezone at 11PM, my camera saved the date as `2020.05.05 03:00AM UTC`, and the script will update that value to `2020.05.04 11:00PM UTC-4`. This allows me to make my photo management software show meaningful dates/times without having to think about updating my camera's clock when switching timezones or when DST starts.
 
 ### ExifTool can already geotag pictures
 
