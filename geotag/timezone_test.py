@@ -37,7 +37,7 @@ def test_gps_coords_to_utc_offset():
     assert (
         gps_coords_to_utc_offset(datetime(2020, 3, 29, 1, tzinfo=utc), lat, lng) == 120
     )
-    # 2:01AM doesn't exist
+    # 2:01AM Paris time doesn't exist
     with pytest.raises(pytz.exceptions.NonExistentTimeError):
         assert gps_coords_to_utc_offset(datetime(2020, 3, 29, 2, 1), lat, lng) == 120
 
@@ -48,7 +48,6 @@ def test_gps_coords_to_utc_offset():
     assert gps_coords_to_utc_offset(datetime(2019, 10, 27, 1, 59), lat, lng) == 120
     # at 3AM Paris time: UTC offset is 1 hour
     assert gps_coords_to_utc_offset(datetime(2019, 10, 27, 3), lat, lng) == 60
-    # 2:01AM is ambiguous
-    # XXX: right now, photos taken at an ambiguous time will make the script crash
+    # 2:01AM Paris time is ambiguous
     with pytest.raises(pytz.exceptions.AmbiguousTimeError):
         assert gps_coords_to_utc_offset(datetime(2019, 10, 27, 2, 1), lat, lng) == 120
