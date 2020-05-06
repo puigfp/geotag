@@ -1,0 +1,38 @@
+
+on: [push]
+name: test
+
+jobs:
+  main:
+    name: pytest
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Install Python
+      uses: actions/setup-python@v1
+      with: { python-version: '3.7' }
+
+    - name: Install poetry
+      uses: dschep/install-poetry-action@v1.2
+
+    - name: Setup poetry
+      run: |
+        poetry config virtualenvs.in-project true
+
+    - name: Checkout repository
+      uses: actions/checkout@v1
+
+    - name: Cache venv
+      id: cache-venv
+      uses: actions/cache@v1
+      with:
+        path: .venv
+        key: venv-${{ hashFiles('poetry.lock') }}
+
+    - name: Setup venv
+      if: steps.cache-venv.outputs.cache-hit != 'true'
+      run: |
+        poetry install
+
+    - name: Run pytest
+      run: poetry run pytest -vv -s --cov geotag geotag/
