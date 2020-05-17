@@ -23,9 +23,9 @@ You'll probably need to update the code to get it to do exactly what you want, a
 - Install [poetry](https://python-poetry.org/).
 - Clone this repository.
 - Run `poetry install`, which creates a separate python environment and installs this project's dependencies inside it.
-- Run `poetry shell`, which activates this python environment is you current shell.
+- Run `poetry shell`, which activates this python environment in you current shell.
 - Running `geotag -h` should now work.
-- You can now modify the code and run it with `geotag path/to/location_history.json path/to/photos/folder/`
+- You can modify the code, and your modified version of the code will be run when you run the `geotag` command
 
 ## Notes
 
@@ -43,7 +43,7 @@ For instance, my camera doesn't populate the timezone field, and I have configur
 Using the [`-geotag` command](https://exiftool.org/geotag.html#geotag) and a KML export of the location history, exiftool can almost do the same thing as this script. However, using a script such as this one gives me more control:
 
 - applying some preprocessing to the location history (GPS data is noisy, and removing absurd GPS data points can make the results a lot better)
-- overwriting already existing GPS data or not
+- overwriting already existing GPS data or not, using any condition
 - ...
 
 ## References
