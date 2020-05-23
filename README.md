@@ -46,6 +46,10 @@ Using the [`-geotag` command](https://exiftool.org/geotag.html#geotag) and a KML
 - overwriting already existing GPS data or not, using any condition
 - ...
 
+### TODOs
+
+- [ ] integration test
+
 ## References
 
 - [ExifTool by Phil Harvey](https://exiftool.org/)
