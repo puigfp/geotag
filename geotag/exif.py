@@ -80,7 +80,6 @@ def get_file_exif_diff(
             ).strftime("%Y:%m:%d %H:%M:%S"),
             "OffsetTimeOriginal": format_exif_timezone_offset(utc_offset_target),
         }
-        print(diff, utc_offset_target)
     except pytz.exceptions.AmbiguousTimeError as e:
         log.error(
             f'skipping "{img_path}" date/time/utc offset update, '
