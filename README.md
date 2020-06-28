@@ -8,7 +8,7 @@
 
 ## Usage
 
-**make a backup of your photos/videos before using this code**
+**Make a backup of your photos/videos before using this code.**
 
 Before running the code:
 
@@ -40,11 +40,17 @@ For instance, my camera doesn't populate the timezone field, and I have configur
 
 ### ExifTool can already geotag pictures
 
-Using the [`-geotag` command](https://exiftool.org/geotag.html#geotag) and a KML export of the location history, exiftool can almost do the same thing as this script. However, using a script such as this one gives me more control:
+Using the [`-geotag` command](https://exiftool.org/geotag.html#geotag) and a KML export of the location history, ExifTool can almost do the same thing as this script. However, using a script such as this one gives me more control:
 
 - applying some preprocessing to the location history (GPS data is noisy, and removing absurd GPS data points can make the results a lot better)
 - overwriting already existing GPS data or not, using any condition
 - ...
+
+### Performance
+
+When updating the EXIF metadata of a photo, ExifTool **always rewrites the whole file**. Thus, adding location metadata to your photo can make your computer rewrite 10s of gigabytes. This can take a lot of time and reduce the lifespan or your SSD / SD card.
+
+If this is an issue for you I would recommend against adding location metadata to all your files, but only adding metadata to the files you actually end up keeping.
 
 ### TODOs
 
