@@ -154,7 +154,7 @@ def get_exif_diff(
         delta_timestamp = abs(closest_location.timestamp - img_timestamp)
         if delta_timestamp > 60 * 60:  # 1 hour
             log.warning(
-                f'skipping "{img_path}", timestamp ({img_timestamp}) is too far from'
+                f'skipping "{img_path}", timestamp ({img_timestamp}) is too far from '
                 f"the closest history timestamp (delta={delta_timestamp}s)"
             )
             return None
