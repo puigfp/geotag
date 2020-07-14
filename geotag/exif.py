@@ -157,7 +157,7 @@ def get_exif_diff(
                 f'skipping "{img_path}", timestamp ({img_timestamp}) is too far from '
                 f"the closest history timestamp (delta={delta_timestamp}s)"
             )
-            return None
+            continue
 
         # append diff
         img_exif_diff = get_file_exif_diff(img_exif, img_date, closest_location)
