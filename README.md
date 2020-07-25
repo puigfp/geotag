@@ -48,9 +48,9 @@ Using the [`-geotag` command](https://exiftool.org/geotag.html#geotag) and a KML
 
 ### Performance
 
-When updating the EXIF metadata of a photo, ExifTool **always rewrites the whole file**. Thus, adding location metadata to your photo can make your computer rewrite 10s of gigabytes. This can take a lot of time and reduce the lifespan or your SSD / SD card.
+When updating the EXIF metadata of a photo, ExifTool **always rewrites the whole file**. Thus, adding location metadata to all your photos can make your computer rewrite 10s of gigabytes. This can take a lot of time and reduce the lifespan or your SSD / SD card.
 
-If this is an issue for you I would recommend against adding location metadata to all your files, but only adding metadata to the files you actually end up keeping.
+If this is an issue for you I would recommend against adding location metadata to all your files, but only adding metadata to the files you actually end up keeping (in my case, I always add GPS metadata after exporting the files in JPEG format).
 
 ### TODOs
 
