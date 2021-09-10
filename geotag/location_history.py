@@ -13,7 +13,6 @@ class Location:
     timestamp: int
     latitude: float
     longitude: float
-    accuracy: int
 
     @staticmethod
     def from_google_json(d: dict) -> Location:
@@ -21,7 +20,6 @@ class Location:
             timestamp=int(d["timestampMs"]) // 1000,
             latitude=int(d["latitudeE7"]) / 10 ** 7,
             longitude=int(d["longitudeE7"]) / 10 ** 7,
-            accuracy=int(d["accuracy"]),
         )
 
 
