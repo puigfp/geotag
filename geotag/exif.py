@@ -1,6 +1,5 @@
 import bisect
 import json
-import os
 import re
 import subprocess
 from datetime import datetime, timedelta, timezone
@@ -24,9 +23,35 @@ def read_exif(root: str) -> List[dict]:
 def write_exif(root_path: str, exif_diff_path: str):
     log.info("writing exif diff to photos using exiftool...")
     subprocess.run(
-        ["exiftool", "-overwrite_original", f"-json={exif_diff_path}", "-r", root_path],
+        [
+            "exiftool",
+            "-overwrite_original",
+            f"-json={exif_diff_path}",
+            "-r",
+            root_path,
+        ],
         check=True,
     )
+
+
+def merge_sidecar_exif(all_exif: dict) -> List[dict]:
+    exif_dict = {}
+    sidecar_exif = []
+    for exif in all_exif:
+        source_file = exif["SourceFile"]
+        if source_file.endswith(".xmp"):
+            sidecar_exif.append(exif)
+        else:
+            exif_dict[source_file] = exif
+
+    for exif in sidecar_exif:
+        source_file = exif["SourceFile"]
+        basename = source_file.split('.xmp')[0]
+        for key in exif_dict.keys():
+            if key.startswith(basename):
+                exif_dict[key].update(**exif)
+
+    return exif_dict.values()
 
 
 # regex for parsing the EXIF time offset format ("±HH:MM")
@@ -64,9 +89,15 @@ def format_exif_timezone_offset(offset: int) -> str:
 
 
 def get_file_exif_diff(
-    img_exif: dict, img_date: datetime, location: Location,
+    img_exif: dict,
+    img_date: datetime,
+    location: Location,
+    update_sidecar: bool,
 ) -> Optional[dict]:
-    diff = {"SourceFile": img_exif["SourceFile"]}
+    source_file = img_exif["SourceFile"]
+    if update_sidecar:
+        source_file = ".".join(source_file.split(".")[:-1]) + ".xmp"
+    diff = {"SourceFile": source_file}
 
     # update date/time/utc offset
     try:
@@ -82,7 +113,7 @@ def get_file_exif_diff(
         }
     except pytz.exceptions.AmbiguousTimeError as e:
         log.error(
-            f'skipping "{img_path}" date/time/utc offset update, '
+            f'skipping "{source_file}" date/time/utc offset update, '
             f"encountered an ambiguous time error: {e}"
         )
 
@@ -105,7 +136,10 @@ def get_file_exif_diff(
 
 
 def get_exif_diff(
-    list_exif: List[dict], location_history: List[Location], utc_offset_default: int
+    list_exif: List[dict],
+    location_history: List[Location],
+    utc_offset_default: int,
+    update_sidecar: bool,
 ) -> List[dict]:
     log.info("computing exif diff")
     location_timestamps = [location.timestamp for location in location_history]
@@ -134,7 +168,8 @@ def get_exif_diff(
 
         # parse image original date
         img_date = datetime.strptime(
-            img_exif["DateTimeOriginal"], "%Y:%m:%d %H:%M:%S",
+            img_exif["DateTimeOriginal"],
+            "%Y:%m:%d %H:%M:%S",
         ).replace(tzinfo=timezone(timedelta(minutes=utc_offset)))
 
         # find closest location
@@ -160,7 +195,9 @@ def get_exif_diff(
             continue
 
         # append diff
-        img_exif_diff = get_file_exif_diff(img_exif, img_date, closest_location)
+        img_exif_diff = get_file_exif_diff(
+            img_exif, img_date, closest_location, update_sidecar
+        )
         if img_exif_diff is not None:
             exif_diff.append(img_exif_diff)
 
